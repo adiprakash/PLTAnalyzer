@@ -11,19 +11,18 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.ChartFactory;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
 
 public class DisplayStatsActivity extends Activity {
     RelativeLayout chart_layout = null;
     private static int COUNT = 7;
     public static final String TAG = "DisplayStatsActivity";
-    public static final String LOOKUP_TIME = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.LOOKUP_TIME";
-    public static final String CONNECT_TIME = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.CONNECT_TIME";
-    public static final String PRE_TRANSFER_TIME = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.PRE_TRANSFER_TIME";
-    public static final String START_TRANSFER_TIME = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.START_TRANSFER_TIME";
-    public static final String DOWNLOADED_SIZE = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.DOWNLOADED_SIZE";
-    public static final String DOWNLOADED_SPEED = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.DOWNLOADED_SPEED";
-    public static final String TOTAL_TIME = "pltanalyzer.com.pltanalyzer.DisplayStatsActivity.TOTAL_TIME";
+    public static final String LOOKUP_TIME = "LOOKUP_TIME";
+    public static final String CONNECT_TIME = "CONNECT_TIME";
+    public static final String PRE_TRANSFER_TIME = "PRE_TRANSFER_TIME";
+    public static final String START_TRANSFER_TIME = "START_TRANSFER_TIME";
+    public static final String DOWNLOADED_SIZE = "DOWNLOADED_SIZE";
+    public static final String DOWNLOADED_SPEED = "DOWNLOADED_SPEED";
+    public static final String TOTAL_TIME = "TOTAL_TIME";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,32 +39,44 @@ public class DisplayStatsActivity extends Activity {
         };
 
         for(int i=0; i < COUNT; i++ ){
-            values[i] = Double.valueOf(intent.getStringExtra(keys[i]));
+            values[i] = Double.parseDouble(intent.getStringExtra(keys[i]));
+            Log.d(TAG," Values:- " + values[i]);
         }
 
         // Color of each Pie Chart Sections
         int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
-                Color.YELLOW };
+                Color.YELLOW, Color.GRAY, Color.BLACK };
 
         // Instantiating CategorySeries to plot Pie Chart
         CategorySeries distributionSeries = new CategorySeries(" Page Load Statistic ");
-        for(int i=0 ;i < values.length;i++){
+        for(int i=0 ;i < values.length-3;i++){
             // Adding a slice with its values and name to the Pie Chart
             distributionSeries.add(keys[i], values[i]);
+            Log.d(TAG," Keys: " + keys[i] + " values: " + values[i]);
         }
 
         // Instantiating a renderer for the Pie Chart
         DefaultRenderer defaultRenderer  = new DefaultRenderer();
-        for(int i = 0 ;i<values.length;i++){
+        Log.d(TAG," Values size = " + values.length);
+        Log.d(TAG," colors size = " + colors.length);
+
+        for(int i = 0 ;i < values.length-3;i++){
             SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
             seriesRenderer.setColor(colors[i]);
             //seriesRenderer.setDisplayChartValues(true);
+            //seriesRenderer.setLegendTextSize(50);
             // Adding a renderer for a slice
             defaultRenderer.addSeriesRenderer(seriesRenderer);
         }
 
+        defaultRenderer.setDisplayValues(true);
+        defaultRenderer.setLabelsTextSize(35);
         defaultRenderer.setChartTitle(" Page Load Statistic ");
-        defaultRenderer.setChartTitleTextSize(20);
+        defaultRenderer.setChartTitleTextSize(80);
+        defaultRenderer.setLegendTextSize(30);
+        defaultRenderer.setLabelsColor(Color.BLUE);
+        defaultRenderer.setScale(1.0f);
+
         defaultRenderer.setZoomButtonsVisible(false);
 
         // Creating an intent to plot bar chart using dataset and multipleRenderer

@@ -2,7 +2,9 @@ package pltanalyzer.com.pltanalyzer;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,7 +26,11 @@ public class SitesListView extends ListActivity{
 
         String[] myStringArray = { "www.google.com", "www.youtube.com", "www.facebook.com",
                 "www.baidu.com", "www.amazon.com", "www.yahoo.com", "www.wikipedia.org",
-                "www.qq.com", "www.twitter.com", "www.live.com", "www.taobao.com" };
+                "www.qq.com", "www.twitter.com", "www.live.com", "www.taobao.com",
+                "www.sina.com.cn", "www.msn.com", "www.bing.com", "www.weibo.com",
+                "www.linked.com", "www.vk.com", "www.instagram.com", "www.ebay.com",
+                "www.reddit.com", "www.netflix.com", "www.paypal.com", "www.apple.com",
+                "www.stackoverflow.com ", "www.wordpress.com"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.simple_url_list, R.id.url, myStringArray);
 
@@ -64,12 +70,13 @@ public class SitesListView extends ListActivity{
         try {
             for(i=0;i<cmd.length;i++)
             {
-                process = Runtime.getRuntime().exec(cmd[i]);
-                //osw = new OutputStreamWriter(process.getOutputStream());
-                //osw.write(cmd[i]);
 
-                //osw.flush();
-                //osw.close();
+                process = Runtime.getRuntime().exec("su");
+                osw = new OutputStreamWriter(process.getOutputStream());
+                osw.write(cmd[i]);
+
+                osw.flush();
+                osw.close();
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(process.getInputStream()));
                 int read;
@@ -81,28 +88,29 @@ public class SitesListView extends ListActivity{
                 reader.close();
                 process.waitFor();
                 String res = output.toString();
+                Log.d("Alpit", res);
                 switch(i)
                 {
                     case 0:
-                        intent.putExtra(DisplayStatsActivity.LOOKUP_TIME, res + " sec\n");
+                        intent.putExtra(DisplayStatsActivity.LOOKUP_TIME, res);
                         break;
                     case 1:
-                        intent.putExtra(DisplayStatsActivity.CONNECT_TIME, res + " sec\n");
+                        intent.putExtra(DisplayStatsActivity.CONNECT_TIME, res);
                         break;
                     case 2:
-                        intent.putExtra(DisplayStatsActivity.PRE_TRANSFER_TIME, res + " sec\n");
+                        intent.putExtra(DisplayStatsActivity.PRE_TRANSFER_TIME, res);
                         break;
                     case 3:
-                        intent.putExtra(DisplayStatsActivity.START_TRANSFER_TIME, res + " sec\n");
+                        intent.putExtra(DisplayStatsActivity.START_TRANSFER_TIME, res);
                         break;
                     case 4:
-                        intent.putExtra(DisplayStatsActivity.DOWNLOADED_SIZE, res + " Bytes\n");
+                        intent.putExtra(DisplayStatsActivity.DOWNLOADED_SIZE, res);
                         break;
                     case 5:
-                        intent.putExtra(DisplayStatsActivity.DOWNLOADED_SPEED, res + " Bytes/sec\n");
+                        intent.putExtra(DisplayStatsActivity.DOWNLOADED_SPEED, res);
                         break;
                     case 6:
-                        intent.putExtra(DisplayStatsActivity.TOTAL_TIME, res+" sec\n");
+                        intent.putExtra(DisplayStatsActivity.TOTAL_TIME, res);
                         break;
                 }
 
